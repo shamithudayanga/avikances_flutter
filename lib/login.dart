@@ -1,7 +1,8 @@
-// import 'dart:ffi';
-// import 'dart:js_interop';
-// import 'dart:ui';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:avikances/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -12,39 +13,65 @@ import 'package:flutter/material.dart';
 // import 'package:mysql_client/mysql_client.dart';
 import 'package:http/http.dart' as http;
 
-
-
-class   FormScreen extends StatefulWidget  {
+class FormScreen extends StatefulWidget {
   @override
   State<FormScreen> createState() => FormScreenState();
 }
 
-
-
 class FormScreenState extends State<FormScreen> {
+  var isLoading = false;
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool passToggle = true;
 
-
-  Future<void> _login() async {
-    final String username = emailController.text;
-    final String password = passwordController.text;
+Future login() async {
+  final String username = emailController.text;
+  final String password = passwordController.text;
 
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/v1/login/getUsernamePassword/$username/$password'), // Replace with your backend login endpoint
       
+      Uri.parse('http://192.168.56.1/api/v1/login/getUsernamePassword/$username/$password'),
+     
     );
 
     if (response.statusCode == 200) {
-      // Successful login
-      
-      Navigator.push(
+      // Parse the response body
+      final Map<String, dynamic>? responseData = json.decode(response.body);
 
-        context,
-        MaterialPageRoute(builder: (context) => Dashbord()),
-      );
+      if (responseData != null && responseData.containsKey('admin_type_id')) {
+        final int adminType = responseData['admin_type_id'] as int;
+
+        // Navigate to the appropriate dashboard based on admin type
+        if (adminType == 1) {
+          print(adminType);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Dashbord()),
+          );
+        } else if (adminType == 2) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Department login'),
+            ),
+          );
+        } else {
+          // Handle other admin types or user types
+          // For now, let's assume there's only one admin type
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid admin type. Please contact support.'),
+            ),
+          );
+        }
+      } else {
+        // Handle missing admin_type in response
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid response from the server.'),
+          ),
+        );
+      }
     } else {
       // Failed login
       ScaffoldMessenger.of(context).showSnackBar(
@@ -53,15 +80,13 @@ class FormScreenState extends State<FormScreen> {
         ),
       );
     }
-  }
+  
+}
 
+// test
 
   @override
-  Widget  build(BuildContext context) {
-
-
-
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Department Login Page"),
@@ -95,7 +120,7 @@ class FormScreenState extends State<FormScreen> {
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
-                    if(value==null || value.isEmpty ){
+                    if (value == null || value.isEmpty) {
                       return 'please enter your username';
                     }
                   },
@@ -122,7 +147,7 @@ class FormScreenState extends State<FormScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if(value == null || value.isEmpty){
+                    if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
                     return null;
@@ -132,10 +157,9 @@ class FormScreenState extends State<FormScreen> {
                 InkWell(
                   onTap: () async {
                     if (formKey.currentState!.validate()) {
-                      _login();
+                      login();
                     }
                   },
-
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -160,10 +184,5 @@ class FormScreenState extends State<FormScreen> {
         ),
       ),
     );
-
-
   }
-
-
-
 }
