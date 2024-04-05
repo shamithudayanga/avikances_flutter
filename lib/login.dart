@@ -33,12 +33,8 @@ class FormScreenState extends State<FormScreen> {
     final String password = passwordController.text;
 
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/v1/login/getUsernamePassword'), // Replace with your backend login endpoint
-      body: {
-        'username': username,
-        'password': password,
-         
-      },
+      Uri.parse('http://localhost:8080/api/v1/login/getUsernamePassword/$username/$password'), // Replace with your backend login endpoint
+      
     );
 
     if (response.statusCode == 200) {
