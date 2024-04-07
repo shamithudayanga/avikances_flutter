@@ -1,9 +1,9 @@
 class Labor{
   String Employee;
-  String jobid;
+  int jobid;
   String hour;
   String rate;
-  String ammount;
+  double ammount;
 
   Labor({
 
@@ -13,34 +13,17 @@ class Labor{
     required this.rate,
     required this.ammount,
   });
+
+   factory Labor.fromJson(Map<String, dynamic> json) {
+    return Labor(
+      jobid: json['jobId'] ,
+      Employee: json['emmployee'],
+      hour: json['hour'],
+      rate: json['rate'],
+      ammount: json['ammount'] ,
+    
+
+    );
+  }
 }
 
-final allLabor=[
-  Labor(
-    Employee: "Ruwan Frendo",
-    jobid: "001",
-    hour: "10",
-    rate: "200",
-    ammount: "2000",
-
-  ),
-
-   Labor(
-    Employee: "Ruwan Frendo",
-    jobid: "001",
-    hour: "10",
-    rate: "200",
-    ammount: "2000",
-
-  ),
-
-
-   Labor(
-    Employee: "Ruwan Frendo",
-    jobid: "001",
-    hour: "10",
-    rate: "200",
-    ammount: "2000",
-
-  ),
-];
