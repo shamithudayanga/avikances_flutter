@@ -13,38 +13,18 @@ class Fix{
     required this.amount,
   });
 
+   factory Fix.fromJson(Map<String, dynamic> json) {
+    return Fix(
+      jobid: json['jobId'] ,
+      dept_id: json['depetId'],
+      fixed_type: json['fixed_type'],
+      rate: json['rate'],
+      amount: json['ammount'] ,
+    
+
+    );
+  }
+
 }
 
-final allFixed=[
-  Fix(
-    jobid: "001",
-    dept_id: "D001",
-    fixed_type: "Clean",
-    rate: "100",
-    amount: "1000",
-  ),
 
-   Fix(
-    jobid: "001",
-    dept_id: "D001",
-    fixed_type: "Clean",
-    rate: "100",
-    amount: "1000",
-  ),
-
-   Fix(
-    jobid: "001",
-    dept_id: "D001",
-    fixed_type: "Clean",
-    rate: "100",
-    amount: "1000",
-  ),
-
-   Fix(
-    jobid: "001",
-    dept_id: "D001",
-    fixed_type: "Clean",
-    rate: "100",
-    amount: "1000",
-  ),
-];
