@@ -29,9 +29,9 @@ Future login() async {
   final String username = emailController.text;
   final String password = passwordController.text;
 
-    final response = await http.post(
+    final response = await http.get(
       
-      Uri.parse('http://192.168.56.1/api/v1/login/getUsernamePassword/$username/$password'),
+      Uri.parse('http://10.0.2.2/api/v1/login/getUsernamePassword/$username/$password'),
      
     );
 
