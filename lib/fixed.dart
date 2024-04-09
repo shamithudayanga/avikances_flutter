@@ -1,9 +1,9 @@
 class Fix{
-  String jobid;
-  String dept_id;
+  int jobid;
+  int dept_id;
   String fixed_type;
   String rate;
-  String amount;
+ double amount;
 
   Fix({
     required this.jobid,

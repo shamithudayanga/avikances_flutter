@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:quickalert/quickalert.dart';
 
 class MaterialCost extends StatefulWidget {
   @override
@@ -56,8 +57,8 @@ class _MaterialCostState extends State<MaterialCost> {
                         backgroundColor: Colors.green,
                         icon: Icons.approval,
                         label: 'Approval',
-                        onPressed: (context) =>
-                            onDismissed(), // Implement your approval logic here
+                        onPressed: (context) => onDismissed(material.mat_id,
+                            context,true), // Implement your approval logic here
                       ),
                     ],
                   ),
@@ -152,4 +153,21 @@ class _MaterialCostState extends State<MaterialCost> {
 
 onDismisseds() {}
 
-onDismissed() {}
+onDismissed(id, BuildContext context, bool isApproved) async {
+  final int approvalStatus = isApproved ? 1 : 3;
+  // final int approvel = 1;
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2/api/v1/material/approvel/$approvalStatus/$id'),
+  );
+
+  if (response.statusCode == 200) {
+    if (isApproved) {
+      QuickAlert.show(
+        context: context, 
+        type: QuickAlertType.success,
+        text: 'Approved'
+      );
+    } 
+    
+  }
+}
