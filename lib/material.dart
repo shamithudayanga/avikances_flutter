@@ -2,6 +2,8 @@
 
 import 'dart:ffi';
 
+
+
 class Materials {
   String mat_id;
   int status;
@@ -11,11 +13,13 @@ class Materials {
   double ammout;
   String date;
   int rate;
+  String reasons;
 
 
   Materials(
 
       {required this.jobid,
+      required this.reasons,
       required this.mat_id,
       required this.material,
       required this.qty,
@@ -37,6 +41,7 @@ class Materials {
       rate: json['rate'],
       mat_id: json["mat_id"],
       status: json["approval_status_id"],
+      reasons: json["reasons"],
 
     );
   }

@@ -12,6 +12,8 @@ class MaterialCost extends StatefulWidget {
 
 class _MaterialCostState extends State<MaterialCost> {
   late Future<List<Materials>> _materials;
+  final textscontroller =TextEditingController();
+  
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _MaterialCostState extends State<MaterialCost> {
       throw 'Failed to load materials';
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +89,7 @@ class _MaterialCostState extends State<MaterialCost> {
                                         title: Text("Reason"),
                                         content: TextFormField(
                                           keyboardType: TextInputType.text,
+                                          controller: textscontroller,
                                           decoration: InputDecoration(
                                             labelText: "Add reason",
                                             border: OutlineInputBorder(),
@@ -97,7 +100,9 @@ class _MaterialCostState extends State<MaterialCost> {
                                         actions: <Widget>[
                                           TextButton(
                                             onPressed: () {
+                                              final String text = textscontroller.text;
                                               Navigator.of(context).pop();
+                                              Regects(material.mat_id, context,true,text);
                                             },
                                             child: Text('Send Reason'),
                                           ),
@@ -131,7 +136,12 @@ class _MaterialCostState extends State<MaterialCost> {
                         Text("Date: ${material.date}"),
                       ],
                     ),
-                    trailing: Text("Amount: ${material.ammout}"),
+                    trailing: Column(
+                      children: [
+                        Text("Amount: ${material.ammout}"),
+                        Text("Reject: ${material.reasons}")
+                      ],
+                    ),
                   ),
                 );
               },
@@ -149,9 +159,31 @@ class _MaterialCostState extends State<MaterialCost> {
       ),
     );
   }
+   
 }
 
 onDismisseds() {}
+
+Regects(id,BuildContext context, bool IsRejects,text) async{
+  
+   final int Isreject = IsRejects ? 2 : 2;
+ 
+  // final int approvel = 1;
+  final response = await http.get(
+    Uri.parse('http://10.0.2.2/api/v1/material/Reject/$id/$Isreject/$text'),
+  );
+  if (response.statusCode == 200) {
+    if (IsRejects) {
+      QuickAlert.show(
+        context: context, 
+        type: QuickAlertType.info,
+        text: 'Reject'
+      );
+    } 
+    
+  }
+
+}
 
 onDismissed(id, BuildContext context, bool isApproved) async {
   final int approvalStatus = isApproved ? 1 : 3;

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:quickalert/quickalert.dart';
 
 class LaborCost extends StatefulWidget {
   @override
@@ -13,7 +14,10 @@ class LaborCost extends StatefulWidget {
 }
 
 class _LaborCostState extends State<LaborCost> {
+  
   late Future<List<Labor>> _labor;
+final rejectController = TextEditingController();
+  get ids => null;
 
   @override
   void initState() {
@@ -60,7 +64,8 @@ class _LaborCostState extends State<LaborCost> {
                         icon: Icons.approval,
                         label: 'Approval',
                         onPressed: (context) =>
-                            onDismissed(), // Implement your approval logic here
+                            onDismissed(labor.employee_id, context, true),
+                        // Implement your approval logic here
                       ),
                     ],
                   ),
@@ -88,9 +93,11 @@ class _LaborCostState extends State<LaborCost> {
                                       builder: (context) => AlertDialog(
                                         title: Text("Reason"),
                                         content: TextFormField(
+                                          controller: rejectController,
                                           keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
                                             labelText: "Add reason",
+                                            
                                             border: OutlineInputBorder(),
                                             prefixIcon: Icon(Icons.note_add),
                                           ),
@@ -99,6 +106,9 @@ class _LaborCostState extends State<LaborCost> {
                                         actions: <Widget>[
                                           TextButton(
                                             onPressed: () {
+                                              final String rejects = rejectController.text;
+                                              Regects(labor.employee_id,
+                                                  context, rejects ,true);
                                               Navigator.of(context).pop();
                                             },
                                             child: Text('Send Reason'),
@@ -152,5 +162,33 @@ class _LaborCostState extends State<LaborCost> {
 
   onDismisseds() {}
 
-  onDismissed() {}
+  Regects(id, BuildContext context,rejects, bool IsReject) async {
+    final int isrejects = IsReject ? 2 : 3;
+    // final int sc = 2;
+    final response = await http.get(
+        Uri.parse('http://10.0.2.2/api/v1/labour/RejectLabour/$isrejects/$id/$rejects'));
+    print(id);
+
+    if (response.statusCode == 200) {
+      if (IsReject) {
+        QuickAlert.show(
+            context: context, type: QuickAlertType.info, text: 'Reject');
+      }
+    }
+  }
+
+  onDismissed(id, BuildContext context, bool isApproved) async {
+    final int approvalStatus = isApproved ? 1 : 3;
+    print(id);
+
+    final response = await http.get(Uri.parse(
+        'http://10.0.2.2/api/v1/labour/approvelEmployee/$approvalStatus/$id'));
+
+    if (response.statusCode == 200) {
+      if (isApproved) {
+        QuickAlert.show(
+            context: context, type: QuickAlertType.success, text: 'Approved');
+      }
+    }
+  }
 }
