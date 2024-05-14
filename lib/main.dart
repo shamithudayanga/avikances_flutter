@@ -6,7 +6,7 @@ import 'package:avikances/start_jobs.dart';
 import 'package:flutter/material.dart';
 
 
-main() {
+main() { 
   runApp(MyApp());
 }
 
